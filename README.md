@@ -1,5 +1,3 @@
 # slim-app
 
-## Questions
-
-
+##
