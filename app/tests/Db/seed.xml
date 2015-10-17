@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+  <table name="Users">
+    <column>UserId</column>
+    <column>username</column>
+    <column>password</column>
+    <column>email</column>
+    <row>
+      <value>11</value>
+      <value>leo</value>
+      <value>leospw</value>
+      <value>leo@asdf.df</value>
+    </row>
+    <row>
+      <value>12</value>
+      <value>gil</value>
+      <value>gilspw</value>
+      <value>gil@asdf.df</value>
+    </row>
+    <row>
+      <value>13</value>
+      <value>bob</value>
+      <value>bobspw</value>
+      <value>bob@asdf.df</value>
+    </row>
+  </table>
+</dataset>

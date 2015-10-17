@@ -1,0 +1,88 @@
+{% extends 'bootstrap-theme-layout.twig' %}
+
+{% block content %}
+<div class="col-sm-6 col-sm-offset-3">
+  <form class="form-horizontal" action="{{ path_for('users.store') }}" method="POST">
+
+    <h2 class="text-center">Register</h2>
+
+    <div class="row top-buffer-40">
+      <div class="form-group{% if errors.username %} has-error{% endif %}">
+        <label for="username" class="col-sm-3 control-label">Username</label>
+        <div class="col-sm-6">
+          <input type="text" id="username" name="username" class="form-control" placeholder="Username"aria-describedby="usernameHelp{% if errors.username %} usernameError{% endif %}" required autofocus>
+          <span id="usernameHelp" class="help-block">4 to 24 alphanumeric characters</span>
+          {% if errors.username %}
+            <span id="usernameError" class="help-block alert alert-danger">
+              {% for errorMessage in errors.username %}
+               {{ errorMessage }}<br/>
+              {% endfor %}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group{% if errors.email %} has-error{% endif %}">
+        <label for="email" class="col-sm-3 control-label">Email</label>
+        <div class="col-sm-6">
+          <input type="email" id="email" name="email" class="form-control" placeholder="Email"{% if errors.email %} aria-describedby="emailError"{% endif %} required autofocus>
+          {% if errors.email %}
+            <span id="emailError" class="help-block alert alert-danger">
+              {% for errorMessage in errors.email %}
+               {{ errorMessage }}<br/>
+              {% endfor %}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="row top-buffer-20">
+      <div class="form-group{% if errors.password %} has-error{% endif %}">
+        <label for="password" class="col-sm-3 control-label">Password</label>
+        <div class="col-sm-6">
+          <input type="password" id="password" name="password" class="form-control" placeholder="Password" aria-describedby="passwordHelp {% if errors.password %} passwordError{% endif %}" required>
+          <span id="passwordHelp" class="help-block">8 to 24 characters, make it complicated :)</span>
+          {% if errors.password %}
+            <span id="passwordError" class="help-block alert alert-danger">
+              {% for errorMessage in errors.password %}
+               {{ errorMessage }}<br/>
+              {% endfor %}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group{% if errors.passwordConfirm %} has-error{% endif %}">
+        <label for="passwordConfirm" class="col-sm-3 control-label">Repeat password</label>
+        <div class="col-sm-6">
+          <input type="password" id="passwordConfirm" name="passwordConfirm" class="form-control" placeholder="Repeat password"{% if errors.passwordConfirm %} aria-describedby="passwordConfirmError"{% endif %} required>
+          {% if errors.passwordConfirm %}
+            <span id="passwordConfirmError" class="help-block alert alert-danger">
+              {% for errorMessage in errors.passwordConfirm %}
+               {{ errorMessage }}<br/>
+              {% endfor %}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    {# <div class="checkbox">
+      <label>
+        <input type="checkbox" value="remember-me"> Remember me
+      </label>
+    </div> #}
+
+    <div class="row col-sm-6 col-sm-offset-3 top-buffer-20">
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+

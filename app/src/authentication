@@ -1,0 +1,56 @@
+
+AuthenticationMiddleware
+http://www.slimframework.com/docs/concepts/middleware.html
+  _invoke
+    authentication class -> isLoggedIn() ?
+      yes -> continue
+      no -> redirects to /login
+      
+Authentication class
+  login(username, password)
+    check if username, password correct
+      yes -> sets session UserId
+          -> returns true
+      no -> sets errors 
+         -> returns false
+  
+  logout()
+    delete Session UserId
+  
+  isLoggedIn()
+    check if session UserId set
+    check if UserId in Users table
+    (if no session UserId, check remember cookie)
+    (check slim encrypted cookies)
+      yes -> true
+      no -> false
+
+  
+AuthenticationAction
+  /login GET show()
+    displays login form
+    
+  /login POST create()
+    -> get post data
+    -> validate data
+      valid
+        Authentication class login(username / password)
+          -> success redirect to /admin
+          -> failure redirect to /login with input
+      unvalid
+        -> get errors from Authentication class
+        -> redirect to /login with input and errors
+  /logout GET destroy()
+    -> Authentication class logout()
+    -> redirect to / 
+
+form
+
+
+validation service
+  main validation class
+    validation function
+    errors
+    error messages
+  subclasses with just validation rules set as a property
+

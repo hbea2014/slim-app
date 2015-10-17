@@ -1,0 +1,56 @@
+{% extends 'authentication/signin-layout.twig' %}
+
+{% block content %}
+
+<form class="form-signin" action="{{ path_for('authentication.store') }}" method="POST">
+
+  <h2 class="form-signin-heading text-center">{{ appName }}</h2>
+
+  {% if errors.form %}
+    <div class="alert alert-danger">
+      {% if errors.form|length == 1 %}
+        <p>{{ errors.form[0] }}</p>
+      {% else %}
+        <p>Please correct the following error(s):</p>
+        <ul>
+        {% for errorMessage in errors.form %}
+          <li>{{ errorMessage }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="form-group{% if errors.username %} has-error{% endif %}">
+    <label for="username" class="control-label sr-only">Username</label>
+    <input type="text" id="username" name="username" class="form-control" placeholder="Username"{% if errors.username %} aria-describedby="usernameError"{% endif %} required autofocus>
+    {% if errors.username %}
+      <span id="usernameError" class="help-block alert alert-danger">
+        {% for errorMessage in errors.username %}
+         {{ errorMessage }}<br/>
+        {% endfor %}
+      </span>
+    {% endif %}
+  </div>
+
+  <div class="form-group{% if errors.password %} has-error{% endif %}">
+    <label for="password" class="control-label sr-only">Password</label>
+    <input type="password" id="password" name="password" class="form-control" placeholder="Password"{% if errors.password %} aria-describedby="passwordError"{% endif %} required>
+    {% if errors.password %}
+      <span id="passwordError" class="help-block alert alert-danger">
+        {% for errorMessage in errors.password %}
+         {{ errorMessage }}<br/>
+        {% endfor %}
+      </span>
+    {% endif %}
+  </div>
+
+  {# <div class="checkbox">
+    <label>
+      <input type="checkbox" value="remember-me"> Remember me
+    </label>
+  </div> #}
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{
+    "require": {
+        "slim/slim": "^3.0@RC",
+        "slim/twig-view": "^2.0"
+    },
+    "require-dev": {
+        "sebastian/peek-and-poke": "1.0.*@dev",
+        "phpunit/phpunit": "^4.8",
+        "athari/yalinqo": "^2.3"
+    },
+    "autoload": {
+      "classmap": [
+        "app/tests"
+      ],
+      "psr-4": {
+        "SlimApp\\": "app/src"
+      }
+    }
+}
