@@ -208,7 +208,8 @@ abstract class DbTable
      * Updates one or more rows
      *
      * @param array $setColumnNamesValues Column names and their new values
-     * $param string $where
+     * @param string $where
+     * @return boolean Returns true on success, false on failure
      * @throws \DomainException
      */
     public function update(array $setColumnNamesValues, $where)
@@ -234,7 +235,7 @@ abstract class DbTable
         }
 
         $stmt = $this->getConnection()->prepare($sql);
-        $stmt->execute($values);
+        return $stmt->execute($values);
     }
 
     /**
@@ -242,6 +243,7 @@ abstract class DbTable
      *
      * @param array $columnNames
      * @param array $values
+     * @return boolean Returns true on success, false on failure
      * @throws \Exception
      */
     public function insert(array $columnNames, array $values)
@@ -267,13 +269,14 @@ abstract class DbTable
         //die($sql);
         
         $stmt = $this->getConnection()->prepare($sql);
-        $stmt->execute($values);
+        return $stmt->execute($values);
     }
 
     /**
      * Deletes one or more rows
      *
      * @param null|string $where
+     * @return boolean Returns true on success, false on failure
      */
     public function delete($where = null)
     {
@@ -284,7 +287,7 @@ abstract class DbTable
         }
 
         $stmt = $this->getConnection()->prepare($sql);
-        $stmt->execute();
+        return $stmt->execute();
     }
 }
 

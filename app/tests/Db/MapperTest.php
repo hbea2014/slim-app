@@ -288,8 +288,10 @@ class MapperTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      * @covers SlimApp\Db\Mapper::update
+     * @param boolean $resultDbTableUpdate
+     * @dataProvider provider_update_calls_update_function_on_DbTable_and_returns_its_output
      */
-    public function update_calls_update_function_on_DbTable()
+    public function update_calls_update_function_on_DbTable_and_returns_its_output($resultDbTableUpdate)
     {
         $setColumnNamesValues = ['columnName1' => 'value1', 'columnName2' => 'value2'];
         $where = '`columnName3` = value3';
@@ -300,16 +302,28 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $dbTable->expects($this->once())
              ->method('update')
-             ->with($setColumnNamesValues, $where);
+             ->with($setColumnNamesValues, $where)
+             ->will($this->returnValue($resultDbTableUpdate));
 
-        $mapper->update($setColumnNamesValues, $where);
+        $resultUpdate = $mapper->update($setColumnNamesValues, $where);
+    }
+
+    public function provider_update_calls_update_function_on_DbTable_and_returns_its_output()
+    {
+        return [
+            // resultDbTableUpdate
+            [true],
+            [false]
+        ];
     }
 
     /**
      * @test
      * @covers SlimApp\Db\Mapper::insert
+     * @param boolean $resultDbTableInsert
+     * @dataProvider provider_insert_calls_insert_function_on_DbTable_and_returns_its_output
      */
-    public function insert_calls_insert_function_on_DbTable()
+    public function insert_calls_insert_function_on_DbTable_and_returns_its_output($resultDbTableInsert)
     {
         $columnNames = ['columnName1', 'columnName2'];
         $values = ['value1', 'value2'];
@@ -320,16 +334,30 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $dbTable->expects($this->once())
              ->method('insert')
-             ->with($columnNames, $values);
+             ->with($columnNames, $values)
+             ->will($this->returnValue($resultDbTableInsert));
 
-        $mapper->insert($columnNames, $values);
+        $resultInsert = $mapper->insert($columnNames, $values);
+
+        $this->assertEquals($resultDbTableInsert, $resultInsert);
+    }
+
+    public function provider_insert_calls_insert_function_on_DbTable_and_returns_its_output()
+    {
+        return [
+            // resultDbTableInsert
+            [true],
+            [false]
+        ];
     }
 
     /**
      * @test
      * @covers SlimApp\Db\Mapper::delete
+     * @param boolean $resultDbTableDelete
+     * @dataProvider provider_delete_calls_delete_function_on_DbTable_and_returns_its_output
      */
-    public function delete_calls_delete_function_on_DbTable()
+    public function delete_calls_delete_function_on_DbTable_and_returns_its_output($resultDbTableDelete)
     {
         $where = '`columnName3` = value3';
         $dbTable = $this->getMockBuilder('\SlimApp\Db\DbTable')
@@ -339,9 +367,21 @@ class MapperTest extends \PHPUnit_Framework_TestCase
 
         $dbTable->expects($this->once())
              ->method('delete')
-             ->with($where);
+             ->with($where)
+             ->will($this->returnValue($resultDbTableDelete));
 
-        $mapper->delete($where);
+        $resultDelete = $mapper->delete($where);
+
+        $this->assertEquals($resultDbTableDelete, $resultDelete);
+    }
+
+    public function provider_delete_calls_delete_function_on_DbTable_and_returns_its_output()
+    {
+        return [
+            // resultDbTableDelete
+            [true],
+            [false]
+        ];
     }
 }
 

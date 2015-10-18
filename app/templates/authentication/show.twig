@@ -4,7 +4,7 @@
 
 <form class="form-signin" action="{{ path_for('authentication.store') }}" method="POST">
 
-  <h2 class="form-signin-heading text-center">{{ appName }}</h2>
+  <h2 class="form-signin-heading text-center">{{ app.name }}</h2>
 
   {% if errors.form %}
     <div class="alert alert-danger">
@@ -23,7 +23,7 @@
 
   <div class="form-group{% if errors.username %} has-error{% endif %}">
     <label for="username" class="control-label sr-only">Username</label>
-    <input type="text" id="username" name="username" class="form-control" placeholder="Username"{% if errors.username %} aria-describedby="usernameError"{% endif %} required autofocus>
+    <input type="text" id="username" name="username" class="form-control" placeholder="Username"{% if errors.username %} aria-describedby="usernameError"{% endif %} value="{% if submitted.username %}{{ submitted.username }}{% endif %}" required autofocus>
     {% if errors.username %}
       <span id="usernameError" class="help-block alert alert-danger">
         {% for errorMessage in errors.username %}

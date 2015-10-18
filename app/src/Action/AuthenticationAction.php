@@ -6,12 +6,8 @@ use Slim\Views\Twig;
 use SlimApp\Authentication;
 use SlimApp\LoginValidator;
 
-final class AuthenticationAction
+final class AuthenticationAction extends BaseAction
 {
-    /**
-     * @var \Slim\Views\Twig
-     */
-    private $view;
 
     /**
      * @var \SlimApp\LoginValidator
@@ -26,20 +22,19 @@ final class AuthenticationAction
     /**
      * Constructor
      *
-     * @param string $appName
+     * @param string $app
      * @param \Slim\Views\Twig $view
      * @param \SlimApp\LoginValidator $loginValidator
      * @param \SlimApp\Authentication $authentication
      */
     public function __construct(
-        $appName,
+        $app,
         Twig $view, 
         LoginValidator $loginValidator, 
         Authentication $authentication
     )
     {
-        $this->appName = $appName;
-        $this->view = $view;
+        parent::__construct($app, $view);
         $this->loginValidator = $loginValidator;
         $this->authentication = $authentication;
     }
@@ -50,15 +45,19 @@ final class AuthenticationAction
      * @param Psr\Http\Message\ServerRequestInterface $request
      * @param Psr\Http\Message\ResponseInterface $response
      * @param array $args
-     * @param null|array $errors The errors to display on the page
      */
-    public function show($request, $response, $args, $errors = null)
+    public function show($request, $response, $args)
     {
-        $this->view->render($response, 'authentication/show.twig', [
+        $data = [
             'title' => 'Login',
-            'appName' => $this->appName,
-            'errors' => $errors
-        ]);
+            'app' => $this->context['app'],
+            'errors' => $this->context['errors'],
+            'submitted' => $this->context['submitted']
+        ];
+
+        $this->view->render($response, 'authentication/show.twig', $data);
+
+        $this->resetContextValues();
 
         return $response;
     }
@@ -73,14 +72,16 @@ final class AuthenticationAction
     public function store($request, $response, $args)
     {
         $data = $request->getParsedBody();
-        $errors = [];
 
-        // Pass only the username and password to the validator
+        // Pass only username and password to the validator
         if (isset($data['username'], $data['password'])) {
             $formData = [
                 'username' => $data['username'],
                 'password' => $data['password']
             ];
+
+            // Submitted data to display on the form in case of errors
+            $this->context['submitted']['username'] = htmlspecialchars(strip_tags($formData['username']));
 
             $validation = $this->loginValidator->validate($formData);
 
@@ -92,18 +93,18 @@ final class AuthenticationAction
                     return $response->withStatus(303)->withHeader('Location', '/admin');
                 } else {
                     // Set error message that login data not correct
-                    $errors['form'][] = 'Cannot log you in. Please try again!';
+                    $this->context['errors']['form'][] = 'Cannot log you in. Please try again!';
                 }
             } else {
                 // Set errors from validation class
-                $errors = $validation->getErrors();
+                $this->context['errors'] = $validation->getErrors();
             }
         } else {
-            $errors['form'][] = 'Each field is required';
+            $this->context['errors']['form'][] = 'Each field is required';
         }
 
-        // Display the login page with errors
-        return $this->show($request, $response, $args, $errors);
+        // Display the login page again with errors
+        return $this->show($request, $response, $args);
     }
 
     /**
@@ -116,6 +117,9 @@ final class AuthenticationAction
     public function destroy($request, $response, $args)
     {
         $this->authentication->logout();
+
+        $this->resetContextValues();
+        $this->context['user'] = null;
 
         // Redirect to the login page
         return $response->withStatus(301)->withHeader('Location', '/login');

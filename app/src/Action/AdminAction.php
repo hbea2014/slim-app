@@ -18,9 +18,9 @@ class AdminAction extends BaseAction
     {
         $this->view->render($response, 'admin/show.twig', [
             'title' => 'Dashboard',
-            'appName' => $this->appName,
-            'queryParams' => $request->getQueryParams(),
-            'username' => $this->user->getUsername()
+            'app' => $this->context['app'],
+            //'queryParams' => $request->getQueryParams(),
+            'user' => $this->context['user']
         ]);
 
         return $response;

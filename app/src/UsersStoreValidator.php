@@ -16,16 +16,19 @@ class UsersStoreValidator extends Validator
             'required' => true,
             'min' => 4,
             'max' => 24,
+            'alphanum' => true,
+            'unique' => 'User',
         ],
         'email' => [
             'required' => true,
             'email' => true,
+            'unique' => 'User',
         ],
         'password' => [
             'required' => true,
             'min' => 8,
             'max' => 24,
-        ]
+        ],
         'passwordConfirm' => [
             'required' => true,
             'matches' => 'password'

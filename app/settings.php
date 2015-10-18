@@ -2,7 +2,10 @@
 
 return [
     'settings' => [
-        'appName' => 'SlimApp',
+        'app' => [
+            'name' => 'SlimApp',
+            'version' => '0.0.1',
+        ],
 
         // View settings
         'view' => [

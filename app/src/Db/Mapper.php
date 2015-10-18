@@ -171,12 +171,13 @@ class Mapper
      * Updates data in the table
      *
      * @param array $setColumnNamesValues Column names and their new values
-     * $param string $where
+     * @param string $where
+     * @return boolean Returns true on success, false on failure
      * @see \SlimApp\Db\DbTable::update()
      */
     public function update(array $setColumnNamesValues, $where)
     {
-        $this->getDbTable()->update($setColumnNamesValues, $where);
+        return $this->getDbTable()->update($setColumnNamesValues, $where);
     }
 
     /**
@@ -184,22 +185,24 @@ class Mapper
      *
      * @param array $columnNames
      * @param array $values
+     * @return boolean Returns true on success, false on failure
      * @see \SlimApp\Db\DbTable::insert()
      */
     public function insert(array $columnNames, array $values)
     {
-        $this->getDbTable()->insert($columnNames, $values);
+        return $this->getDbTable()->insert($columnNames, $values);
     }
 
     /**
      * Deletes data in the table
      *
      * @param null|string $where
+     * @return boolean Returns true on success, false on failure
      * @see \SlimApp\Db\DbTable::delete()
      */
     public function delete($where = null)
     {
-        $this->getDbTable()->delete($where);
+        return $this->getDbTable()->delete($where);
     }
 }
 

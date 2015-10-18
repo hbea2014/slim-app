@@ -550,12 +550,17 @@ abstract class Validator
         }
 
         // Get the name of the model set in the mapper
-        $mapperModelName = get_class($this->getMapper()->getModel());
+        $mapperModelNameWithNamespace = get_class($this->getMapper()->getModel());
+
+        $mapperModelName = 
+            (false === strpos('\\', $mapperModelNameWithNamespace))
+            ? array_pop(explode('\\', $mapperModelNameWithNamespace))
+            : $mapperModelNameWithNamespace;
 
         // Check that the model name set in the rule matches the name of the model set in the mapper
         if ( $mapperModelName !== $ruleValue) {
             throw new \DomainException('Model set in Validator\'s mapper not matching model set in rule (validator: "'
-                . $mapperModelName . '", rule: "' . $ruleValue . '".');
+                . $mapperModelName . '", rule: "' . $ruleValue . '").');
         }
 
         // Get the name of the model associated with the DbTable
@@ -571,7 +576,9 @@ abstract class Validator
                 . '" (original ruleValue: "' . $ruleValue . '")).');
         }
 
-        $value = trim($value);
+        if (is_string($value)) {
+            $value = '\'' . trim($value) . '\'';
+        }
         $where = '`' . $fieldName . '` = ' . $value;
 
         if (false !== $this->getMapper()->findRow($where)) {

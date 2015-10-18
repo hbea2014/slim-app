@@ -10,7 +10,7 @@
       <div class="form-group{% if errors.username %} has-error{% endif %}">
         <label for="username" class="col-sm-3 control-label">Username</label>
         <div class="col-sm-6">
-          <input type="text" id="username" name="username" class="form-control" placeholder="Username"aria-describedby="usernameHelp{% if errors.username %} usernameError{% endif %}" required autofocus>
+          <input type="text" id="username" name="username" class="form-control" placeholder="Username" aria-describedby="usernameHelp{% if errors.username %} usernameError{% endif %}" value="{% if submitted.username %}{{ submitted.username }}{% endif %}" required autofocus>
           <span id="usernameHelp" class="help-block">4 to 24 alphanumeric characters</span>
           {% if errors.username %}
             <span id="usernameError" class="help-block alert alert-danger">
@@ -27,7 +27,7 @@
       <div class="form-group{% if errors.email %} has-error{% endif %}">
         <label for="email" class="col-sm-3 control-label">Email</label>
         <div class="col-sm-6">
-          <input type="email" id="email" name="email" class="form-control" placeholder="Email"{% if errors.email %} aria-describedby="emailError"{% endif %} required autofocus>
+          <input type="email" id="email" name="email" class="form-control" placeholder="Email"{% if errors.email %} aria-describedby="emailError"{% endif %} value="{% if submitted.email %}{{ submitted.email }}{% endif %}" required autofocus>
           {% if errors.email %}
             <span id="emailError" class="help-block alert alert-danger">
               {% for errorMessage in errors.email %}
@@ -79,7 +79,7 @@
     </div> #}
 
     <div class="row col-sm-6 col-sm-offset-3 top-buffer-20">
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
     </div>
 
   </form>

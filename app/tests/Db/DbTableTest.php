@@ -477,9 +477,9 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
      * @param null|string $where
      * @param null|string $whereLinq The corresponding string to create where clause with YaLinqo
      * @uses SlimApp\Db\DbTable::findRow
-     * @dataProvider provider_update_updates_data_correctly
+     * @dataProvider provider_update_updates_data_correctly_and_returns_true_on_success
      */
-    public function update_updates_data_correctly($tableName, $setColumnNamesValues, $where, $whereLinq)
+    public function update_updates_data_correctly_and_returns_true_on_success($tableName, $setColumnNamesValues, $where, $whereLinq)
     {
         $config = require __DIR__ . '/database-config-for-dbunit.php';
         $table = $this->getMockBuilder('SlimApp\Db\DbTable')
@@ -489,7 +489,7 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
         
         // Set tablename manually (set in subclasses, not in abstract class...)
         $dbTable->tableName = $tableName;
-        $dbTable->update($setColumnNamesValues, $where);
+        $resultUpdate = $dbTable->update($setColumnNamesValues, $where);
 
         $result = $dbTable->findRow($where);
 
@@ -506,11 +506,12 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
 
         //die(var_dump($result, $expected));
 
+        $this->assertTrue($resultUpdate);
         $this->assertEquals($expected, $result);
 
     }
 
-    public function provider_update_updates_data_correctly()
+    public function provider_update_updates_data_correctly_and_returns_true_on_success()
     {
         return [
             // tableName, setColumnNamesValues, where, whereLinq
@@ -588,9 +589,9 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
      * @param array $values
      * @param string $where
      * @uses SlimApp\Db\DbTable::findRow
-     * @dataProvider provider_insert_inserts_data
+     * @dataProvider provider_insert_inserts_data_and_returns_true_on_success
      */
-    public function insert_inserts_data($tableName, $columnNames, $values, $where)
+    public function insert_inserts_data_and_returns_true_on_success($tableName, $columnNames, $values, $where, $columnToIgnoreInComparison)
     {
         $config = require __DIR__ . '/database-config-for-dbunit.php';
         $table = $this->getMockBuilder('SlimApp\Db\DbTable')
@@ -600,7 +601,8 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
         
         // Set tablename manually (set in subclasses, not in abstract class...)
         $dbTable->tableName = $tableName;
-        $dbTable->insert($columnNames, $values);
+        //$dbTable->insert($columnNames, $values);
+        $resultInsert = $dbTable->insert($columnNames, array_values($values));
 
         // Check if row inserted
         $result = $dbTable->findRow($where);
@@ -608,21 +610,25 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
         // Recreate the result using the columnNames and values
         $expected = [];
 
-        for ($i = 0; $i < count($columnNames); $i++) {
-            $expected[$columnNames[$i]] = $values[$i];
+        foreach ($columnNames as $columnName) {
+            $expected[$columnName] = $values[$columnName];
         }
 
-        //die(var_dump($result, $expected));
+        if (false !== $columnToIgnoreInComparison ) {
+            $expected[$columnToIgnoreInComparison] = $result[$columnToIgnoreInComparison];
+        }
         
+        $this->assertTrue($resultInsert);
         $this->assertEquals($expected, $result);
     }
 
-    public function provider_insert_inserts_data()
+    public function provider_insert_inserts_data_and_returns_true_on_success()
     {
         return [
-            // tableName, columnNames, values, where
-            ['Users', ['UserId', 'username', 'password', 'email'], [100, 'anna', 'annapw', 'anna@asdf.df'], '`UserId` = 100'],
-            ['Users', ['UserId', 'username', 'password', 'email'], [222, 'lily', 'lilypw', 'lily@asdf.df'], '`username` = "lily"'],
+            // tableName, columnNames, values, where, columnToIgnoreInComparison
+            ['Users', ['UserId', 'username', 'password', 'email'], ['UserId' => 100, 'username' => 'anna', 'password' => 'annapw', 'email' => 'anna@asdf.df'], '`UserId` = 100', false],
+            ['Users', ['UserId', 'username', 'password', 'email'], ['UserId' => 222, 'username' => 'lily', 'password' => 'lilypw', 'email' => 'lily@asdf.df'], '`username` = "lily"', false],
+            ['Users', ['username', 'password', 'email'], ['username' => 'siggy', 'password' => 'siggypw', 'email' => 'siggy@asdf.df'], '`username` = "siggy"', 'UserId'],
         ];
     }
 
@@ -634,9 +640,9 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
      * @param string $where
      * @uses SlimApp\Db\DbTable::insert
      * @uses SlimApp\Db\DbTable::findRow
-     * @dataProvider provider_delete_deletes_data
+     * @dataProvider provider_delete_deletes_data_and_returns_true_on_success
      */
-    public function delete_deletes_data($tableName, $columnNames, $values, $where)
+    public function delete_deletes_data_and_returns_true_on_success($tableName, $columnNames, $values, $where)
     {
         $config = require __DIR__ . '/database-config-for-dbunit.php';
         $table = $this->getMockBuilder('SlimApp\Db\DbTable')
@@ -650,17 +656,18 @@ class DbTableTest extends SlimApp_Tests_DatabaseTestCase
         // Insert row and then delete it
         $dbTable->insert($columnNames, $values);
 
-        $dbTable->delete($where);
+        $resultDelete = $dbTable->delete($where);
 
         // Check if row deleted
         $result = $dbTable->findRow($where);
 
         //die(var_dump($result));
         
+        $this->assertTrue($resultDelete);
         $this->assertFalse($result);
     }
 
-    public function provider_delete_deletes_data()
+    public function provider_delete_deletes_data_and_returns_true_on_success()
     {
         return [
             // tableName, columnNames, values, where

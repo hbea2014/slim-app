@@ -10,10 +10,10 @@ $container = $app->getContainer();
 // -----------------
 
 // App name
-$container['appName'] = function ($c) {
+$container['app'] = function ($c) {
     $settings = $c->get('settings');
 
-    return $settings['appName'];
+    return $settings['app'];
 };
 
 // Twig
@@ -61,11 +61,19 @@ $container['Authentication'] = function ($c) {
     return new \SlimApp\Authentication($userMapper);
 };
 
-// AuthenticationValidator
+// LoginValidator
 $container['LoginValidator'] = function ($c) {
     $userMapper = $c->get('UserMapper');
 
     return new \SlimApp\LoginValidator($userMapper);
+};
+
+// UsersStoreValidator
+$container['UsersStoreValidator'] = function ($c) {
+    $userMapper = $c->get('UserMapper');
+    //die(var_dump($userMapper->getModel()));
+
+    return new \SlimApp\UsersStoreValidator($userMapper);
 };
 
 // ----------------
@@ -74,7 +82,7 @@ $container['LoginValidator'] = function ($c) {
 
 $container['SlimApp\Action\AuthenticationAction'] = function ($c) {
     return new SlimApp\Action\AuthenticationAction(
-        $c->get('appName'),
+        $c->get('app'),
         $c->get('view'), 
         $c->get('LoginValidator'),
         $c->get('Authentication')
@@ -83,7 +91,7 @@ $container['SlimApp\Action\AuthenticationAction'] = function ($c) {
 
 $container['SlimApp\Action\BaseAdminAction'] = function ($c) {
     return new SlimApp\Action\BaseAdminAction(
-        $c->get('appName'),
+        $c->get('app'),
         $c->get('view'), 
         $c->get('UserMapper')
     );
@@ -91,16 +99,18 @@ $container['SlimApp\Action\BaseAdminAction'] = function ($c) {
 
 $container['SlimApp\Action\AdminAction'] = function ($c) {
     return new SlimApp\Action\AdminAction(
-        $c->get('appName'),
+        $c->get('app'),
         $c->get('view'), 
         $c->get('UserMapper')
     );
 };
 
 $container['SlimApp\Action\UsersAction'] = function ($c) {
+    //die(var_dump($c->get('UsersStoreValidator')));
     return new SlimApp\Action\UsersAction(
-        $c->get('appName'),
+        $c->get('app'),
         $c->get('view'), 
-        $c->get('UserMapper')
+        $c->get('UserMapper'),
+        $c->get('UsersStoreValidator')
     );
 };
